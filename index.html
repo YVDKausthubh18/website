@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Parameter Display & Settings</title>
   <style>
     body {
@@ -24,6 +24,11 @@
     #main {
       display: none;
       padding: 20px;
+    }
+    .datetime {
+      text-align: center;
+      font-size: 1.2em;
+      margin-bottom: 15px;
     }
     .parameter-row {
       display: flex;
@@ -109,11 +114,18 @@
   </style>
 </head>
 <body>
+
+  <!-- Splash Screen -->
   <div id="splash">
     <img src="company-logo.jpeg" alt="Company Logo">
   </div>
 
+  <!-- Main App -->
   <div id="main">
+    <!-- Live Date and Time -->
+    <div class="datetime" id="datetime">Loading date and time...</div>
+
+    <!-- Parameters Display -->
     <div class="parameter-row">
       <div class="param" id="temp" onclick="toggleParam(this)" data-original="Temperature:">Temperature: <span id="val-temp">25°C</span></div>
       <div class="param" id="humid" onclick="toggleParam(this)" data-original="Humidity:">Humidity: <span id="val-humid">45%</span></div>
@@ -125,11 +137,14 @@
       <button onclick="acknowledgeWarning()">Acknowledge Warning 🔔</button>
     </div>
 
+    <!-- Settings Icon -->
     <div id="settings-icon" onclick="toggleSettings()">⚙️</div>
 
+    <!-- Settings Page -->
     <div id="settings-page" style="display:none">
       <h2 style="text-align:center">Parameter Settings</h2>
 
+      <!-- Temperature Settings -->
       <div class="settings-group temp-group" data-index="0">
         <h3>Temperature</h3>
         <div class="setting-item"><label>High Threshold:</label><input type="number"></div>
@@ -141,6 +156,7 @@
         <div class="setting-item"><label>Offset Value:</label><input type="number"><span class="lock" onclick="checkPassword('Temperature')">🔒</span></div>
       </div>
 
+      <!-- Humidity Settings -->
       <div class="settings-group humid-group" data-index="1" style="display:none">
         <h3>Humidity</h3>
         <div class="setting-item"><label>High Threshold:</label><input type="number"></div>
@@ -152,6 +168,7 @@
         <div class="setting-item"><label>Offset:</label><input type="number"><span class="lock" onclick="checkPassword('Humidity')">🔒</span></div>
       </div>
 
+      <!-- Pressure Settings -->
       <div class="settings-group pressure-group" data-index="2" style="display:none">
         <h3>Pressure</h3>
         <div class="setting-item"><label>Threshold:</label><input type="number"></div>
@@ -161,6 +178,7 @@
         <div class="setting-item"><label>Pressure Offset:</label><input type="number"><span class="lock" onclick="checkPassword('Pressure')">🔒</span></div>
       </div>
 
+      <!-- Air Quality Settings -->
       <div class="settings-group air-group" data-index="3" style="display:none">
         <h3>Air Quality</h3>
         <div class="setting-item"><label>Quality Index:</label><input type="number"></div>
@@ -171,8 +189,8 @@
       </div>
 
       <div class="nav-buttons">
-        <button onclick="navigateSettings(-1)">></button>
-        <button onclick="navigateSettings(1)"><</button>
+        <button onclick="navigateSettings(-1)">&#8592;</button>
+        <button onclick="navigateSettings(1)">&#8594;</button>
       </div>
 
       <div class="save-buttons">
@@ -187,11 +205,12 @@
     let currentIndex = 0;
 
     window.onload = function () {
-      // Show splash screen for 5 seconds
       setTimeout(() => {
         document.getElementById("splash").style.display = "none";
         document.getElementById("main").style.display = "block";
-      }, 5000); // <-- updated from 3000 to 5000 (i.e., 5 seconds)
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
+      }, 5000);
 
       warningTimer = setInterval(() => {
         let temp = parseInt(document.getElementById("val-temp").innerText);
@@ -201,6 +220,12 @@
       }, 3000);
     };
 
+    function updateDateTime() {
+      const now = new Date();
+      const formatted = now.toLocaleString();
+      document.getElementById("datetime").innerText = `📅 ${formatted}`;
+    }
+
     function acknowledgeWarning() {
       document.querySelectorAll('.param').forEach(p => p.classList.remove("alert"));
       clearTimeout(warningTimer);
@@ -209,7 +234,7 @@
 
     function toggleParam(el) {
       const current = el.textContent.includes("Off");
-      el.innerHTML = current ? el.dataset.original : `${el.dataset.original} (Off)`;
+      el.innerHTML = current ? el.dataset.original + ' <span>' + el.querySelector('span').innerText + '</span>' : `${el.dataset.original} (Off)`;
     }
 
     function toggleSettings() {
