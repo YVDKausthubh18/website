@@ -187,10 +187,11 @@
     let currentIndex = 0;
 
     window.onload = function () {
+      // Show splash screen for 5 seconds
       setTimeout(() => {
         document.getElementById("splash").style.display = "none";
         document.getElementById("main").style.display = "block";
-      }, 3000);
+      }, 5000); // <-- updated from 3000 to 5000 (i.e., 5 seconds)
 
       warningTimer = setInterval(() => {
         let temp = parseInt(document.getElementById("val-temp").innerText);
